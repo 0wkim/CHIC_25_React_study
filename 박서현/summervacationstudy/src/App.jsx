@@ -1,4 +1,5 @@
 
+import {useState} from 'react';
 
 import './App.css';
 import Closing from './components/Closing';
@@ -6,14 +7,26 @@ import First from './components/First';
 import Intro from './components/Intro';
 
 function App() {
+  const [Introdata] = useState(
+    {
+      introduce: "정보융합학부 24학번 박서현입니다"
+    }
+  )
+  const [Closingdata] = useState(
+    {
+      month: "7월 10일 목요일" ,
+      day: "폭염주의보. 매우 더움"
+    }
+  )
+
   return (
     <>
-    <Intro introduce ="정보융합학부 24학번 박서현입니다"/>
+    <Intro introduce={Introdata.introduce}/>
     <First />
     <Today />
     <Name />
     <Reference />
-    <Closing month="7월 10일" day="34도 매우 더움"/>
+    <Closing month={Closingdata.month} day={Closingdata.day}/>
     </>
   );
 }
