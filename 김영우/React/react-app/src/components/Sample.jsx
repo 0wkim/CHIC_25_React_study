@@ -5,6 +5,9 @@ function Sample(props) {
         <>
             <article>
                 <p>{props.desc}</p>
+                <hr />
+                <p>age: 22</p>
+                <p>mbti: ISTJ</p>
             </article>
         </>
     )

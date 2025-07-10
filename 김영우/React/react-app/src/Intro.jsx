@@ -8,7 +8,7 @@ function Intro() {
     const [intro] = useState({
         date: '2025-07-10',
         name: '김영우',
-        desc: '광운대학교 정보융합학부 김영우입니다.',
+        desc: '광운대학교 정보융합학부 VT 김영우입니다.',
     });
 
     return (
