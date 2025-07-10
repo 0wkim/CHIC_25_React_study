@@ -1,11 +1,11 @@
-function Closing(){
+function Closing(props){
   return(
     <>
     <div class="close">
-      <h4>오늘은</h4>
-      2025-07-10
+      <h4>오늘은 2025년</h4>
+      {props.month}
       <h5>날씨는</h5>
-      맑음입니다
+      {props.day}
     </div>
     </>
   )

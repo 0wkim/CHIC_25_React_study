@@ -8,12 +8,12 @@ import Intro from './components/Intro';
 function App() {
   return (
     <>
-    <Intro />
+    <Intro introduce ="정보융합학부 24학번 박서현입니다"/>
     <First />
     <Today />
     <Name />
     <Reference />
-    <Closing />
+    <Closing month="7월 10일" day="34도 매우 더움"/>
     </>
   );
 }
