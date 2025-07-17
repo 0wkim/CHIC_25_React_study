@@ -6,7 +6,7 @@ import Intro from './Intro.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Intro />
-    {/* <App /> */}
+    {/* <Intro /> */}
+    <App />
   </StrictMode>,
 )
