@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import './App.css';
 import TOC from './components/TOC';
-import Content from './components/Content';
+import ReadContent from './components/ReadContent';
+import CreateContent from './components/CreateContent';
 import Subject from './components/Subject';
+import Control from './components/Control';
 
 function App() {
+    let max_content_id = 3;
+
     const [state, setState] = useState({
-        mode: 'read',
+        mode: 'create',
 
         welcome: {
             title: 'Welcome',
@@ -28,12 +32,15 @@ function App() {
     });
 
     // 기본값 설정 
-    var _title, _desc = null;
+    var _title, _desc, _article = null;
 
     // mode를 활용하여 페이지 구분 
     if (state.mode === 'welcome') {
         _title = state.welcome.title;
         _desc = state.welcome.desc;
+
+        // content 변경
+        _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
     } else if (state.mode === 'read') {
         var i = 0;
 
@@ -49,6 +56,27 @@ function App() {
 
             i += 1;
         }
+
+        // content 변경
+        _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+    } else if (state.mode === 'create') {
+        _article = <CreateContent onSubmit={function(_title, _desc){
+            // 사용자가 작성한 content를 state.contents에 추가
+            max_content_id = max_content_id + 1;
+
+            // state.contents.push(
+            //     {id: max_content_id, title: _title, desc: _desc}
+            // );
+
+            var _contents = state.contents.concat(
+                {id: max_content_id, title: _title, desc: _desc}
+            );
+
+            setState(prev => ({
+                ...prev,
+                contents: _contents,
+            }));
+        }}></CreateContent>;
     }
 
     return (
@@ -81,7 +109,15 @@ function App() {
                         selected_content_id: Number(id), 
                     }));
                 }} data={state.contents}></TOC> 
-                <Content title={_title} desc={_desc}></Content>
+
+                <Control onChangeMode={function(_mode){
+                    setState(prev => ({
+                        ...prev,
+                        mode: _mode, 
+                    }))
+                }}></Control>
+
+                {_article}
             </div>
         </>
     )

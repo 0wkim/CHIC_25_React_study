@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 
 function TOC(props) {
     // TOC에는 this.props.data가 넘어옴 
@@ -35,4 +35,9 @@ function TOC(props) {
     )
 }
 
-export default TOC;
+// 리렌더링 되지 않는 조건 
+function areEqual(prevProps, nextProps) {
+    return prevProps.data === nextProps.data;
+}
+
+export default React.memo(TOC, areEqual);
