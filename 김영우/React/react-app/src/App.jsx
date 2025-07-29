@@ -5,6 +5,7 @@ import ReadContent from './components/ReadContent';
 import CreateContent from './components/CreateContent';
 import Subject from './components/Subject';
 import Control from './components/Control';
+import UpdateContent from './components/UpdateContent';
 
 function App() {
     let max_content_id = 3;
@@ -31,52 +32,99 @@ function App() {
         selected_content_id: 2,
     });
 
-    // 기본값 설정 
-    var _title, _desc, _article = null;
-
-    // mode를 활용하여 페이지 구분 
-    if (state.mode === 'welcome') {
-        _title = state.welcome.title;
-        _desc = state.welcome.desc;
-
-        // content 변경
-        _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
-    } else if (state.mode === 'read') {
+    function getReadContent() {
         var i = 0;
 
         while(i < state.contents.length) {
             var data = state.contents[i];
 
             if (data.id === state.selected_content_id) {
-                _title = data.title;
-                _desc = data.desc;
-
-                break;
+                return data;
+                // break;
             }
 
             i += 1;
         }
+    }
 
-        // content 변경
-        _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
-    } else if (state.mode === 'create') {
-        _article = <CreateContent onSubmit={function(_title, _desc){
-            // 사용자가 작성한 content를 state.contents에 추가
-            max_content_id = max_content_id + 1;
+    function getContent() {
+        // 기본값 설정 
+        var _title, _desc, _article = null;
 
-            // state.contents.push(
-            //     {id: max_content_id, title: _title, desc: _desc}
-            // );
+        // mode를 활용하여 페이지 구분 
+        if (state.mode === 'welcome') {
+            _title = state.welcome.title;
+            _desc = state.welcome.desc;
 
-            var _contents = state.contents.concat(
-                {id: max_content_id, title: _title, desc: _desc}
-            );
+            // content 변경
+            _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
+        } else if (state.mode === 'read') {
+           var _content = getReadContent();
+            // content 변경
+            _article = <ReadContent title={_content.title} desc={_content.desc}></ReadContent>;
+        } else if (state.mode === 'create') {
+            _article = <CreateContent onSubmit={function(_title, _desc){
+                // 사용자가 작성한 content를 state.contents에 추가
+                max_content_id = max_content_id + 1;
 
-            setState(prev => ({
-                ...prev,
-                contents: _contents,
-            }));
-        }}></CreateContent>;
+                // state.contents.push(
+                //     {id: max_content_id, title: _title, desc: _desc}
+                // );
+
+                // var _contents = state.contents.concat(
+                //     {id: max_content_id, title: _title, desc: _desc}
+                // );
+
+                // 불변성 유지를 위해 Array.from 이용 
+                var _contents = Array.from(state.contents);
+                _contents.push(
+                    {id: max_content_id, title: _title, desc: _desc}
+                );
+
+                setState(prev => ({
+                    ...prev,
+                    contents: _contents,
+                    mode: 'read',
+                    selected_content_id: max_content_id,
+                }));
+            }}></CreateContent>;
+        } else if (state.mode === 'update') {
+            _content = getReadContent();
+
+            _article = <UpdateContent data={_content} onSubmit={
+                function(_id, _title, _desc){
+                    // contents를 복사해서 새로운 배열 제작 
+                    // 기존 배열을 덮어씌우지 않음 (불변성 유지)
+                    var _contents = Array.from(state.contents);
+
+                    var i = 0;
+
+                    while (i < _contents.length) {
+                        if (_contents[i].id === _id) {
+                            _contents[i] = {
+                                id: _id,
+                                title: _title,
+                                desc: _desc,
+                            };
+
+                            break;
+                        }
+
+                        i += 1;
+                    }
+
+                    setState(prev => ({
+                        ...prev,
+                        contents: _contents,
+
+                        // submit을 하면 바뀐 본문까지 보여짐 
+                        mode: 'read',
+                    }));
+                }
+            }></UpdateContent>;
+        }
+
+        return _article;
     }
 
     return (
@@ -117,7 +165,7 @@ function App() {
                     }))
                 }}></Control>
 
-                {_article}
+                {getContent()}
             </div>
         </>
     )
