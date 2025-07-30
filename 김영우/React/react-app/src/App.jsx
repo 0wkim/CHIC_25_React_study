@@ -11,7 +11,7 @@ function App() {
     let max_content_id = 3;
 
     const [state, setState] = useState({
-        mode: 'create',
+        mode: 'welcome',
 
         welcome: {
             title: 'Welcome',
@@ -159,10 +159,37 @@ function App() {
                 }} data={state.contents}></TOC> 
 
                 <Control onChangeMode={function(_mode){
-                    setState(prev => ({
-                        ...prev,
-                        mode: _mode, 
-                    }))
+
+                    // 삭제 기능 구현 
+                    if (_mode === 'delete') {
+
+                        // 사용자가 확인을 누르면 true, cancel을 누르면 false 
+                        if (window.confirm('정말 삭제하시겠습니까?')) {
+                            // true이면 진짜 삭제
+                            var _contents = Array.from(state.contents);
+                            var i = 0;
+                            while (i < _contents.length) {
+                                if (_contents[i].id === state.selected_content_id) {
+                                    _contents.splice(i, 1); // _contents의 원본 변경 
+                                    break;
+                                }
+                                i += 1;
+                            }
+
+                            setState(prev => ({
+                                ...prev,
+                                contents: _contents,
+                                mode: 'welcome',
+                            }));
+
+                            alert('삭제 되었습니다.');
+                        }
+                    } else {
+                        setState(prev => ({
+                            ...prev,
+                            mode: _mode, 
+                        }));
+                    }
                 }}></Control>
 
                 {getContent()}
